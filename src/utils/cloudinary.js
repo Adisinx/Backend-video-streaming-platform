@@ -10,6 +10,8 @@ import fs from "fs";
         api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
+})();
+
     const uploadOnCloudinary = async (localFilePath) => {
         try {
             if (!localFilePath) return null;
@@ -19,6 +21,7 @@ import fs from "fs";
             });
 
             console.log("File is uploaded to Cloudinary:", response.url);
+            console.log(response);
             return response;
 
         } catch (error) {
@@ -31,7 +34,7 @@ import fs from "fs";
     // Example usage inside the IIFE
     // await uploadOnCloudinary("path/to/your/file");
 
-})();
+
 
 // Export the function for external use
 export { uploadOnCloudinary };
