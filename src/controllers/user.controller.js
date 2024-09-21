@@ -13,20 +13,21 @@ const registerUser=asyncHandler(async(req,res)=>{
    //remove password and refresh token from response
    //check for user creation
    //return response
-   const {username,fullName,email,avatar}=req.body;
+   const {username,password,fullName,email,avatar}=req.body;
    console.log("username:",username);
    console.log("email:",email);
+   console.log(req.body);
 
 //    if(fullName==="")
 //    {
 //     throw new ApiError(400,"fullname is required!")
 //    }
 
-      if([username,fullName,email,avatar].some((field)=>field?.trim()==="")){
+      if([username,password,fullName,email,avatar].some((field)=>field?.trim()==="")){
         throw new ApiError(400,"All fields are required!")
       }
 
-      const existedUser = User.findOne({
+      const existedUser = await User.findOne({
         $or: [{ username }, { email }]
       });
       
@@ -35,7 +36,13 @@ const registerUser=asyncHandler(async(req,res)=>{
     }
 
     const avatarLocalPath=req.files?.avatar[0].path;
-    const coverImageLocalPath=req.files?.coverImage[0].path;
+    //const coverImageLocalPath=req.files?.coverImage[0].path;
+
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0)
+    {
+        coverImageLocalPath=req.files.coverImage[0].path;
+    }
 
     if(!avatarLocalPath)
     {
@@ -52,7 +59,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     const user=await User.create({
         fullName,
         avatar:avatarUrl.url,
-        coverImage:coverImageUrl.url||"",
+        coverImage:coverImageUrl?.url||"",
         email,
         password,
         username:username.toLowerCase()

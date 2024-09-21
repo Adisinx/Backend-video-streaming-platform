@@ -21,7 +21,10 @@ import fs from "fs";
             });
 
             console.log("File is uploaded to Cloudinary:", response.url);
-            console.log(response);
+            // console.log(response);
+            // return response;
+
+            fs.unlinkSync(localFilePath);
             return response;
 
         } catch (error) {
